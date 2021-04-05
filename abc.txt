@@ -1,0 +1,58 @@
+package com.example.drawerapplication
+
+import android.graphics.Paint
+import android.os.Bundle
+import android.text.SpannableString
+import android.text.Spanned
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import com.example.drawerapplication.databinding.ActivityMainBinding
+import com.example.drawerapplication.fragment.AirtelFragment
+import com.example.drawerapplication.fragment.BankFragment
+import com.example.drawerapplication.fragment.HelpFragment
+import com.google.android.material.navigation.NavigationView
+
+class MainActivity : AppCompatActivity() {
+    private var binding:ActivityMainBinding?=null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
+        setSupportActionBar(binding!!.toolbar)
+        var toogle = ActionBarDrawerToggle(this,binding!!.drawer,binding!!.toolbar,R.string.open,R.string.close)
+       binding!!.drawer.addDrawerListener(toogle)
+        toogle.syncState()
+        supportFragmentManager.beginTransaction().replace(R.id.container,AirtelFragment()).commit()
+        binding!!.navmenu.setCheckedItem(R.id.airtel)
+
+        binding!!.navmenu.setNavigationItemSelectedListener(object : NavigationView.OnNavigationItemSelectedListener {
+            var temp: Fragment? = null
+            override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+                when (menuItem.itemId) {
+                    R.id.airtel -> {
+                        binding!!.title.setText("Aitel")
+                        binding!!.title.setPaintFlags(binding!!.title.getPaintFlags() or Paint.UNDERLINE_TEXT_FLAG)
+                        temp = AirtelFragment()
+                    }
+                    R.id.banking -> {
+                        binding!!.title.setText("Bank")
+                        binding!!.title.setPaintFlags(binding!!.title.getPaintFlags() or Paint.UNDERLINE_TEXT_FLAG)
+                        temp = BankFragment()
+                    }
+                    R.id.help -> {
+                        binding!!.title.setText("Help & Support")
+                        binding!!.title.setPaintFlags(binding!!.title.getPaintFlags() or Paint.UNDERLINE_TEXT_FLAG)
+                        temp = HelpFragment()
+                    }
+                }
+                supportFragmentManager.beginTransaction().replace(R.id.container, temp!!).commit()
+                binding!!.drawer.closeDrawer(GravityCompat.START)
+                return true
+            }
+        })
+
+    }
+}
